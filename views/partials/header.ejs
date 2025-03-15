@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <header>
+    <a href="/game">
+        <img src="/images/circle.jpg" class="<%= page === 'game' ? 'active' : '' %>" alt="Game Page">
+    </a>    
+    <a href="/profile">
+        <img src="/images/profile.jpg" class="<%= page === 'profile' ? 'active' : '' %>" alt="Profile">
+    </a>
+    <a href="/leaderboard">
+        <img src="/images/trophy.jpg" class="<%= page === 'leaderboard' ? 'active' : '' %>" alt="Leaderboard">
+    </a>
+    <a href="/characters">
+        <img src="/images/smile.jpg" class="<%= page === 'characters' ? 'active' : '' %>" alt="Characters">
+    </a>
+  </header>
