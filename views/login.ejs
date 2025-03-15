@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+
+  <body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <% if (false) { %>//change false to error & remove index.js comments once login database is up
+            <p class="error"><%= error %></p>
+        <% } %>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <a href="/signup">
+            <button class="button">Sign Up Here!</button>
+        </a>
+    </div>
+    
+</body>
+</html>
