@@ -38,4 +38,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+const session = require('express-session');//for keeping track of username
+
+app.use(session({
+    secret: 'ubfwaluyf37glig8gasld89fgli9',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set `true` if using HTTPS
+}));
+
 module.exports = app;
