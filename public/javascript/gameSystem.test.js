@@ -14,15 +14,6 @@ createPieces = () => {
     return [piece1, piece2, piece3, piece4, piece5, piece6, piece7, piece8, piece9];
 }
 
-// Setup Game
-createGame = () => {
-    const game = new gameSystem.Game();
-    const pieces = createPieces();
-    for (let i = 0; i < pieces.length; i++) {
-        game.addGamePiece(pieces[i]);
-    }
-    return game;
-}
 //Test Area
 test('creates a game piece and tests functions', () => {
     //covers all functions for GamePiece
@@ -36,17 +27,14 @@ test('creates a game piece and tests functions', () => {
 
 test('tests create game', () => {
     //covers all functions for Game
-    const game = new gameSystem.Game();
     const pieces = createPieces();
-    for (let i = 0; i < pieces.length; i++) {
-        game.addGamePiece(pieces[i]);
-    }
+    const game = new gameSystem.Game(pieces);
+    expect(game.gamePieces.length).toBe(9);
 });
 
 test('tests getCircle', () => {
-
-    const game = createGame();
     const pieces = createPieces();
+    const game = new gameSystem.Game(pieces);
 
     expect(game.getCircle(0).length).toBe(3);
     expect(game.getCircle(1).length).toBe(3);
@@ -60,8 +48,8 @@ test('tests getCircle', () => {
 });
 
 test('tests reorderPieces', () => {
-    const game = createGame();
     const pieces = createPieces();
+    const game = new gameSystem.Game(pieces);
     let firstOrder = game.gamePieces;
 
     expect(firstOrder[0]).toStrictEqual(pieces[0]);
@@ -91,42 +79,35 @@ test('tests reorderPieces', () => {
 });
 
 test('tests doAction', () => {
-    const game = createGame();
+    const pieces = createPieces();
+    const game = new gameSystem.Game(pieces);
     // I'd write out the math but I don't want to do that right now
     // Just trust me bro
 
-    game.doAction(0, 0);
-    expect(game.happiness).toBe(3);
+    expect(game.doAction(0, 0)).toBe(3);
 
-    game.doAction(0, 1);
-    expect(game.happiness).toBe(5);
+    expect(game.doAction(0, 1)).toBe(2);
 
-    game.doAction(0, 2);
-    expect(game.happiness).toBe(5);
+    expect(game.doAction(0, 2)).toBe(0);
 
-    game.doAction(1, 0);
-    expect(game.happiness).toBe(11);
+    expect(game.doAction(1, 0)).toBe(6);
 
-    game.doAction(1, 1);
-    expect(game.happiness).toBe(18);
+    expect(game.doAction(1, 1)).toBe(7);
 
-    game.doAction(1, 2);
-    expect(game.happiness).toBe(26);
+    expect(game.doAction(1, 2)).toBe(8);
 
-    game.doAction(2, 0);
-    expect(game.happiness).toBe(32);
+    expect(game.doAction(2, 0)).toBe(6);
 
-    game.doAction(2, 1);
-    expect(game.happiness).toBe(37);
+    expect(game.doAction(2, 1)).toBe(5);
 
-    game.doAction(2, 2);
-    expect(game.happiness).toBe(41);
+    expect(game.doAction(2, 2)).toBe(4);
 });
 
 test('tests singleCircleToString', () => {
-    const game = createGame();
+    const pieces = createPieces();
+    const game = new gameSystem.Game(pieces);
 
-    expect(game.singleCircleToString(0)).toBe('Sama Bob Joe');
-    expect(game.singleCircleToString(1)).toBe('Bill Sally Mary');
-    expect(game.singleCircleToString(2)).toBe('Sue Tom Jim');
+    expect(game.singleCircleToString(0)).toBe('Sama: Compliment: 1, Help: 0, Invite: -2\nBob: Compliment: 0, Help: 1, Invite: 2\nJoe: Compliment: 2, Help: 1, Invite: 0');
+    expect(game.singleCircleToString(1)).toBe('Bill: Compliment: 1, Help: 2, Invite: 3\nSally: Compliment: 3, Help: 2, Invite: 1\nMary: Compliment: 2, Help: 3, Invite: 4');
+    expect(game.singleCircleToString(2)).toBe('Sue: Compliment: 4, Help: 3, Invite: 2\nTom: Compliment: 2, Help: 1, Invite: 0\nJim: Compliment: 0, Help: 1, Invite: 2');
 });

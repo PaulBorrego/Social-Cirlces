@@ -18,14 +18,11 @@ class GamePiece {
 }
 
 class Game {
-    constructor () {
+    constructor (gamePieces) {
         this.gamePieces = [];
-        this.happiness = 0;
-    }
-
-    // Add game piece to game
-    addGamePiece(gamePiece) {
-        this.gamePieces.push(gamePiece);
+        gamePieces.forEach(piece => {
+            this.gamePieces.push(piece);   
+        });
     }
 
     // Input: array of ints which will move the game pieces to new positions
@@ -45,16 +42,18 @@ class Game {
     // Get the happiness as a result of the action
     doAction(circleNumber,action) {
         let circle = this.getCircle(circleNumber);
+        let happiness = 0;
         for (let i = 0; i < circle.length; i++) {
-            this.happiness += circle[i].getActionResult(action);
+            happiness += circle[i].getActionResult(action);
         }
+        return happiness;
     }
 
     singleCircleToString(circleNumber) {
         let circle = this.getCircle(circleNumber);
         let str = '';
         for (let i = 0; i < circle.length; i++) {
-            str += circle[i].name + ' ';
+            str += circle[i].name + ': Compliment: ' + circle[i].values[0] + ', Help: ' + circle[i].values[1] + ', Invite: ' + circle[i].values[2] + '\n';
         }
         return str.trim();
     }

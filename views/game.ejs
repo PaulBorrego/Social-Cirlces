@@ -1,6 +1,58 @@
 <%- include('./partials/header') %>
+<head>
+    <script src="javascript/gameSystem.js" defer></script>
+</head>
 
   <body>
     <h1><%= title %></h1>
+    <button id="startGame" onclick="startGame('<%=JSON.stringify(characters)%>')">Start Game</button>
+    <script>
+      var game = null;
+      function startGame(characters) {
+        let parsed_characters = JSON.parse(characters);
+        let gamePieces = [];
+        parsed_characters.forEach(g => {
+          let values = [g.compliment_effect, g.help_effect, g.invite_effect];
+          gamePieces.push(new GamePiece(g.name,values) );
+        });
+        game = new Game(gamePieces);
+        console.log(game.singleCircleToString(0));
+        console.log(game.singleCircleToString(1));
+        console.log(game.singleCircleToString(2));
+      }
+      //temporary scripts for testing
+      function doAct(a,b) {
+        let val = game.getCircle(a);
+        val.forEach(g => {
+          console.log(g.name + ": " +g.values[b]);
+        });
+        console.log(game.doAction(a,b));
+      }
+      function helpMe() {
+        console.log("0 is to give a compliment, 1 is to help, 2 is to invite");
+        let a = prompt("Enter the circle number you want to act on: ");
+        let val = game.getCircle(a);
+        console.log(game.singleCircleToString(a));
+        let b = prompt("Enter the action you want to do: ");
+        switch(b) {
+          case "0":
+            doAct(a,0);
+            break;
+          case "1":
+            doAct(a,1);
+            break;
+          case "2":
+            doAct(a,2);
+            break;
+          case "b":
+            helpMe();
+            break;
+          default:
+            console.log("Invalid action");
+            break;
+        }
+      }
+    </script>>
   </body>
+  
 </html>
