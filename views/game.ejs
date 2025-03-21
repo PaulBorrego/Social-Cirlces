@@ -52,6 +52,30 @@
             break;
         }
       }
+      function reverse() {
+          console.log("BEFORE");
+          console.log(game.singleCircleToString(0));
+          console.log(game.singleCircleToString(1));
+          console.log(game.singleCircleToString(2));
+
+          game.reorderPieces([8,7,6,5,4,3,2,1,0]);
+          console.log("AFTER");
+          console.log(game.singleCircleToString(0));
+          console.log(game.singleCircleToString(1));
+          console.log(game.singleCircleToString(2));
+      }
+      function redo() {
+          console.log("BEFORE");
+          console.log(game.singleCircleToString(0));
+          console.log(game.singleCircleToString(1));
+          console.log(game.singleCircleToString(2));
+
+          game.reorderPieces([1,8,2,4,3,5,7,6,0]);
+          console.log("AFTER");
+          console.log(game.singleCircleToString(0));
+          console.log(game.singleCircleToString(1));
+          console.log(game.singleCircleToString(2));
+      }
     </script>>
   </body>
   
