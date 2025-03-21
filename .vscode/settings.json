@@ -1,0 +1,9 @@
+{
+    "workbench.editor.customLabels.enabled": true,
+    "workbench.editor.customLabels.patterns": {
+        "/home/pborrego/Computer_Science_Classes/software_engineering/Dynamic_Web_Development/public/stylesheets/style.css": "style.css",
+        "*/Dynamic_Web_Development/views/recipeList.ejs": "r",
+        "/home/pborrego/computer_science_classes/software_engineering/Dynamic_Web_Development/database/connection.js": "connection",
+        "*/public/javascript/game.js": "gameSystem.js"
+    }
+}
