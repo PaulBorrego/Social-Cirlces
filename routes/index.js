@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var db_connection = require('../database/connection');
 
 /* GET login page. */
 router.get('/', function(req, res, next) {
@@ -9,7 +10,12 @@ router.get('/', function(req, res, next) {
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
   //const user = users.find(u => u.username === username && u.password === password);
-  res.render("game", { title: 'Social Circles Game Page', page: 'game'});
+  let sql = 'SELECT * FROM characters';
+  db_connection.query(sql,(err, results) => {
+    if (err) throw err;
+    console.log(results); // Log the results to the console
+    res.render('game', { title: 'Social Circles Game Page', page: 'game', characters: results });
+  });
   //if (user) {
      //req.session.user = { username }; // Store in session
      //res.redirect('/game'); // Redirect to game page
@@ -23,7 +29,12 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.get('/game', function(req, res, next) {
-  res.render('game', { title: 'Social Circles Game Page', page: 'game'});
+  let sql = 'SELECT * FROM characters';
+  db_connection.query(sql,(err, results) => {
+    if (err) throw err;
+    console.log(results); // Log the results to the console
+    res.render('game', { title: 'Social Circles Game Page', page: 'game', characters: results });
+  });
 });
 
 router.get('/profile', function(req, res, next) {
