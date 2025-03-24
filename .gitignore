@@ -2,6 +2,6 @@
 .env
 database/connection.js
 
-# Directory
+# Directories
 node_modules/
 bin/
