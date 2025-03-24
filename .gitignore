@@ -1,1 +1,7 @@
+# files
 .env
+database/connection.js
+
+# Directory
+node_modules/
+bin/
