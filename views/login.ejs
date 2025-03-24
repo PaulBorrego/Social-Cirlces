@@ -7,19 +7,24 @@
 
   <body>
     <div class="login-container">
-        <h2>Login</h2>
-        <% if (false) { %>//change false to error & remove index.js comments once login database is up
+        <h2>Social Circles Login</h2>
+
+        <!-- Display any error messages -->
+        <% if (error) { %>
             <p class="error"><%= error %></p>
         <% } %>
+
         <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <label for="username">Username</label>
+            <input type="text" name="username" placeholder="Enter Username" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="Enter Password" required>
+
             <button type="submit">Login</button>
         </form>
-        <a href="/signup">
-            <button class="button">Sign Up Here!</button>
-        </a>
+
+        <p>Don't have an account? <a href="/signup">Sign Up here</a></p>
     </div>
-    
-</body>
+  </body>
 </html>
