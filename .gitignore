@@ -1,3 +1,12 @@
+# files
 .env
+<<<<<<< HEAD
 
 /node_module
+=======
+database/connection.js
+
+# Directories
+node_modules/
+bin/
+>>>>>>> e1aac580ed541b194bf1cd03e32fdedf39a0ad40

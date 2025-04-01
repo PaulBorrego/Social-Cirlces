@@ -1,39 +1,31 @@
 var express = require('express');
 var router = express.Router();
-const bcrypt = require('bcrypt');
 var db_connection = require('../database/connection');
 
 /* GET login page. */
 router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Social Circles', error: null });
+  res.render('login', { title: 'Social Circles' });
 });
 
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
-
-  const sql = 'SELECT * FROM users WHERE username = ?';
-  db_connection.query(sql, [username], async (err, results) => {  // Use db_connection here
-      if (err) throw err;
-
-      if (results.length > 0) {
-          const user = results[0];
-
-          // Compare hashed password
-          const passwordMatch = await bcrypt.compare(password, user.password_hash);
-          if (passwordMatch) {
-              req.session.user = { id: user.user_id, username: user.username };
-              res.redirect('/game'); // Redirect to game page
-          } else {
-              res.render('login', { title: 'Social Circles', error: 'Invalid username or password' });
-          }
-      } else {
-          res.render('login', { title: 'Social Circles', error: 'Invalid username or password' });
-      }
+  //const user = users.find(u => u.username === username && u.password === password);
+  let sql = 'SELECT * FROM characters';
+  db_connection.query(sql,(err, results) => {
+    if (err) throw err;
+    console.log(results); // Log the results to the console
+    res.render('game', { title: 'Social Circles Game Page', page: 'game', characters: results });
   });
+  //if (user) {
+     //req.session.user = { username }; // Store in session
+     //res.redirect('/game'); // Redirect to game page
+  //} else {
+      //res.render("login", { error: "Invalid username or password" });
+  //}
 });
 
 router.get('/signup', function(req, res, next) {
-  res.render('signup', { error: null });
+  res.render('signup', { title: 'Social Circles' });
 });
 
 router.post('/signup', async (req, res) => {
@@ -111,14 +103,5 @@ router.get('/characters', function(req, res, next) {
   res.render('characters', { title: 'Characters', page: 'characters'});
 });
 
-router.get('/logout', (req, res) => {
-  req.session.destroy(err => {
-      if (err) {
-          return res.redirect('/game');
-      }
-      res.clearCookie('connect.sid');
-      res.redirect('/');
-  });
-});
 
 module.exports = router;
