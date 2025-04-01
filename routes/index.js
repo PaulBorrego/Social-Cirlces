@@ -74,12 +74,33 @@ router.get('/game', (req, res) => {
   const sql = 'SELECT * FROM characters';
   db_connection.query(sql, (err, results) => {
       if (err) throw err;
-      res.render('game', { title: 'Game', page: 'game', characters: results, user: req.session.user });
+
+      // Ensure 'started' persists across requests
+      if (req.session.started === undefined) {
+          req.session.started = false; // Only initialize if undefined
+      }
+
+      res.render('game', { 
+          title: 'Game', 
+          page: 'game', 
+          characters: results, 
+          user: req.session.user, 
+          started: req.session.started // Use session-based 'started' state
+      });
   });
 });
 
+router.post('/start-game', (req, res) => {
+  if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' }); // Prevent unauthorized access
+  }
+
+  req.session.started = true; // Set the game as started
+  res.sendStatus(200); // Respond with success
+});
+
 router.get('/profile', function(req, res, next) {
-  res.render('profile', { title: 'Player Profile', page: 'profile'/*, username: req.session.user.username*/});
+  res.render('profile', { title: ' Profile', page: 'profile', username: req.session.user.username});
 });
 
 router.get('/leaderboard', function(req, res, next) {
