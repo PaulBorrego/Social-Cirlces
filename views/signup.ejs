@@ -4,14 +4,21 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-
   <body>
     <div class="login-container">
-        <h2>form needed</h2>
+        <h2>Sign Up</h2>
+        <% if (error) { %> <!-- Show error if there is one -->
+            <p class="error"><%= error %></p>
+        <% } %>
+        <form action="/signup" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
         <a href="/">
-            <button class="button">Sign Up</button>
+            <button class="button">Already have an account? Login here!</button>
         </a>
     </div>
-    
-</body>
+  </body>
 </html>

@@ -1,7 +1,10 @@
 <%- include('./partials/header') %>
 
-  <body>
-    <h1><%= username %>'s<%= title %></h1>
-    <a href="/logout">Logout</a>
-  </body>
+<body>
+  <h1><%= username %>'s <%= title %></h1>
+  <!-- Logout Form -->
+  <form action="/logout" method="POST">
+    <button type="submit">Logout</button>
+  </form>
+</body>
 </html>
