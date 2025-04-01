@@ -4,8 +4,37 @@
 </head>
 
   <body>
-    <h1><%= title %></h1>
-    <button id="startGame" onclick="startGame('<%=JSON.stringify(characters)%>')">Start Game</button>
+    <% if (started) { %>
+      <div class="triangle-container">
+        <div class="top-circle circle">
+          <% for (let j = 0; j < 3; j++) { %>
+              <p><%= j + 1 %></p>
+          <% } %>
+        </div>
+        <div class="bottom-circles">
+            <div class="circle">
+              <% for (let j = 0; j < 3; j++) { %>
+                  <p><%= j + 4 %></p>
+              <% } %>
+            </div>
+            <div class="circle">
+              <% for (let j = 0; j < 3; j++) { %>
+                  <p><%= j + 7 %></p>
+              <% } %>
+            </div>
+        </div>
+    </div>
+    <div class="button-container">
+      <button class="action-btn">give compliment</button>
+      <button class="action-btn">offer help</button>
+      <button class="action-btn">invite to event</button>
+    </div>
+    <% } else { %>
+      <div class="startgame-container">
+        <p>Welcome to Social Circles! To get a high score, you must choose actions that boost happiness. Check the characters page to see how actions effect different characters. Click start game to begin!</p>
+        <button id="startGame" onclick="startGame('<%=JSON.stringify(characters)%>')">Start Game</button>
+      </div>
+    <% } %>
     <script>
       var game = null;
       function startGame(characters) {
@@ -19,6 +48,17 @@
         console.log(game.singleCircleToString(0));
         console.log(game.singleCircleToString(1));
         console.log(game.singleCircleToString(2));
+        // Send request to update 'started' on the server
+        fetch('/start-game', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload(); // Reload page to reflect game start
+            }
+        });
       }
       //temporary scripts for testing
       function doAct(a,b) {
@@ -52,7 +92,7 @@
             break;
         }
       }
-    </script>>
+    </script>
   </body>
   
 </html>

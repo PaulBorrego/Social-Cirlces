@@ -3,11 +3,20 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session'); // Import session before using it
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// Session middleware should be added before the routes
+app.use(session({
+    secret: 'ubfwaluyf37glig8gasld89fgli9',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set `true` if using HTTPS
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,14 +46,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-const session = require('express-session');//for keeping track of username
-
-app.use(session({
-    secret: 'ubfwaluyf37glig8gasld89fgli9',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } // Set `true` if using HTTPS
-}));
 
 module.exports = app;
