@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  background-color: #005F6B;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,6 +29,7 @@ input {
 
 button {
   width: 100%;
+  max-width: 200px;
   padding: 10px;
   margin: 5px auto;
   background-color: #007BFF;
@@ -40,6 +41,33 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Centers buttons horizontally */
+  gap: 15px; /* Adds space between buttons */
+  position: fixed; /* Fixes buttons at the bottom of the page */
+  bottom: 20px; /* Distance from the bottom */
+  left: 50%;
+  transform: translateX(-50%); /* Ensures proper centering */
+  width: 100%;
+}
+
+.action-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: lightblue;
+  color: black;
+  border: 3px solid black;
+  border-radius: 5px;
+  height: 60px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+  background-color: deepskyblue;
 }
 
 header {
@@ -69,6 +97,48 @@ header img.active {
   margin-bottom: 10px;
 }
 
-a {
-  color: #00B7FF;
+.startgame-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center the items horizontally */
+  justify-content: center; /* Center vertically if you want */
+  text-align: center; /* Center the text inside the <p> */
+  gap: 50px;
+}
+
+.startgame-container p {
+  max-width: 500px; /* Limit the width of the paragraph */
+  width: 100%; /* Allow it to be responsive, but not stretch too wide */
+  margin: 0 auto; /* Center the paragraph */
+}
+
+.triangle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center everything horizontally */
+  height: 100vh;
+  justify-content: center; /* Centers everything on the page */
+  gap: 50px; /* Space between top and bottom circles */
+}
+
+.bottom-circles {
+  display: flex;
+  gap: 80px; /* Adjust this to bring the circles closer */
+}
+
+.circle {
+  width: 170px;
+  height: 170px;
+  background-color: lightblue;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid black;
+}
+
+p {
+  display: block;
+  margin: 5px 0; /* Adjust as needed */
 }
