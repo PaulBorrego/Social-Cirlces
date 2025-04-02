@@ -1,43 +1,35 @@
 <%- include('./partials/header') %>
-<head>
-    <script src="javascript/gameSystem.js" defer></script>
 </head>
-
-  <body>
+  <body onload="startGame('<%=JSON.stringify(characters)%>')">
     <% if (started) { %>
       <div class="triangle-container">
-        <div class="top-circle circle">
-          <% for (let j = 0; j < 3; j++) { %>
-              <p><%= j + 1 %></p>
-          <% } %>
+        <div class="top-circle circle" id="circle0" onclick="(pickCircle(0))">
         </div>
         <div class="bottom-circles">
-            <div class="circle">
-              <% for (let j = 0; j < 3; j++) { %>
-                  <p><%= j + 4 %></p>
-              <% } %>
+            <div class="circle" id="circle1" onclick="(pickCircle(1))">
             </div>
-            <div class="circle">
-              <% for (let j = 0; j < 3; j++) { %>
-                  <p><%= j + 7 %></p>
-              <% } %>
+            <div class="circle" id="circle2" onclick="(pickCircle(2))">
             </div>
         </div>
     </div>
     <div class="button-container">
-      <button class="action-btn">give compliment</button>
-      <button class="action-btn">offer help</button>
-      <button class="action-btn">invite to event</button>
+      <button class="action-btn" onclick="doAct(0)">give compliment</button>
+      <button class="action-btn" onclick="doAct(1)">offer help</button>
+      <button class="action-btn" onclick="doAct(2)">invite to event</button>
     </div>
     <% } else { %>
       <div class="startgame-container">
         <p>Welcome to Social Circles! To get a high score, you must choose actions that boost happiness. Check the characters page to see how actions effect different characters. Click start game to begin!</p>
-        <button id="startGame" onclick="startGame('<%=JSON.stringify(characters)%>')">Start Game</button>
+        <button id="startGame" onclick="ok()">Start Game</button>
       </div>
     <% } %>
     <script>
       var game = null;
-      function startGame(characters) {
+      var pickedCircle = null;
+      var otherColor = "lightblue";
+      var pickedColor = "teal";
+
+      /*function startGame(characters) {
         let parsed_characters = JSON.parse(characters);
         let gamePieces = [];
         parsed_characters.forEach(g => {
@@ -45,10 +37,31 @@
           gamePieces.push(new GamePiece(g.name,values) );
         });
         game = new Game(gamePieces);
-        console.log(game.singleCircleToString(0));
-        console.log(game.singleCircleToString(1));
-        console.log(game.singleCircleToString(2));
+      
+        for (let i = 0; i <= 2; i++) {
+          let result = '';
+          for (let j = 0; j <= 2; j++) {
+            result = result + '<p>' + game.gamePieces[i * 3 + j].name + '</p>';
+          }
+          document.getElementById('circle' + i).innerHTML = result;
+        }
+
         // Send request to update 'started' on the server
+      }
+      */
+      function startGame(characters) {
+        let parsed_characters = JSON.parse(characters);
+        for (let i = 0; i <= 2; i++) {
+          let result = '';
+          for (let j = 0; j <= 2; j++) {
+            result = result + '<p>' + parsed_characters[i * 3 + j] + '</p>';
+          }
+          document.getElementById('circle' + i).innerHTML = result;
+        }
+
+      }
+
+      function ok() {
         fetch('/start-game', {
             method: 'POST',
             headers: {
@@ -60,36 +73,25 @@
             }
         });
       }
-      //temporary scripts for testing
-      function doAct(a,b) {
-        let val = game.getCircle(a);
-        val.forEach(g => {
-          console.log(g.name + ": " +g.values[b]);
-        });
-        console.log(game.doAction(a,b));
+
+      
+      function doAct(action) {
+        console.log("you picked action " + action + " on circle " + pickedCircle);
+        if (pickedCircle == null) {
+          alert("Please pick a circle first!");
+          return;
+        }
+        //console.log(game.doAction(pickedCircle,action));
       }
-      function helpMe() {
-        console.log("0 is to give a compliment, 1 is to help, 2 is to invite");
-        let a = prompt("Enter the circle number you want to act on: ");
-        let val = game.getCircle(a);
-        console.log(game.singleCircleToString(a));
-        let b = prompt("Enter the action you want to do: ");
-        switch(b) {
-          case "0":
-            doAct(a,0);
-            break;
-          case "1":
-            doAct(a,1);
-            break;
-          case "2":
-            doAct(a,2);
-            break;
-          case "b":
-            helpMe();
-            break;
-          default:
-            console.log("Invalid action");
-            break;
+
+      function pickCircle(circleNumber) {
+        if (pickedCircle != circleNumber) {
+          pickedCircle = circleNumber;
+          console.log(circleNumber);
+          document.getElementById("circle0").style.backgroundColor = otherColor;
+          document.getElementById("circle1").style.backgroundColor = otherColor;
+          document.getElementById("circle2").style.backgroundColor = otherColor;
+          document.getElementById("circle" + circleNumber).style.backgroundColor = pickedColor;
         }
       }
     </script>

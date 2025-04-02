@@ -98,10 +98,18 @@ router.get('/game', (req, res) => {
       req.session.started = false; // Only initialize if undefined
     }
 
+    let parsed_characters = JSON.parse(JSON.stringify(results));
+    let gamePieces = [];
+    parsed_characters.forEach(g => {
+      gamePieces.push(g.name);
+    });
+
+    console.log(gamePieces);
+
     res.render('game', {
       title: 'Game',
       page: 'game',
-      characters: results,
+      characters: gamePieces,
       user: req.session.user,
       started: req.session.started // Use session-based 'started' state
     });

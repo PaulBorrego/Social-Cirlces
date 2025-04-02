@@ -24,7 +24,7 @@ class Game {
             this.gamePieces.push(piece);   
         });
     }
-
+    
     // Input: array of ints which will move the game pieces to new positions
     reorderPieces(newOrder) {
         let newGamePieces = [];
@@ -42,6 +42,7 @@ class Game {
     // Get the happiness as a result of the action
     doAction(circleNumber,action) {
         let circle = this.getCircle(circleNumber);
+        console.log(circle);
         let happiness = 0;
         for (let i = 0; i < circle.length; i++) {
             happiness += circle[i].getActionResult(action);
@@ -49,6 +50,7 @@ class Game {
         return happiness;
     }
 
+    //mostly just for testing purposes
     singleCircleToString(circleNumber) {
         let circle = this.getCircle(circleNumber);
         let str = '';
