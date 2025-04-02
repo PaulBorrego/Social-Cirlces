@@ -5,9 +5,10 @@
 // 2: Invite to Event
 
 class GamePiece {
-    constructor (name, values) {
+    constructor (name, values, position) {
         this.name = name;
         this.values = values;
+        this.position = position
     }
 
     // Get result of action
@@ -19,19 +20,26 @@ class GamePiece {
 
 class Game {
     constructor (gamePieces) {
-        this.gamePieces = [];
-        gamePieces.forEach(piece => {
-            this.gamePieces.push(piece);   
+        this.basic = [0,1,2,3,4,5,6,7,8];
+
+        this.gamePieces = [null, null, null, null, null, null, null, null, null];
+        gamePieces.forEach(g => {
+            this.gamePieces[g.position] = g;
         });
+        
     }
     
     // Input: array of ints which will move the game pieces to new positions
-    reorderPieces(newOrder) {
+    reorderPieces() {
         let newGamePieces = [];
+        let newOrder = shuffle(this.basic);
+
         for (let i = 0; i < this.gamePieces.length; i++) {
             newGamePieces[i] = this.gamePieces[newOrder[i]];
         }
-        this.gamePieces = newGamePieces;        
+        this.gamePieces = newGamePieces;
+        
+        this.updateSQL();
     }
 
     // Get the circle from circle number
@@ -60,6 +68,34 @@ class Game {
         return str.trim();
     }
 
+    //this command will change the
+    updateSQL() {
+        const pre = 'UPDATE characters SET postion='; 
+        const post = ' WHERE position=';  //dont forget semicolon
+        const semicolon = ';';
+        let ret = '';
+        for (let i = 0; i < this.gamePieces.length; i++) {
+            ret = ret + pre + i + post + this.gamePieces[i].position + semicolon;
+            this.gamePieces[i].position = i;
+        }
+    }
 }
+
+//got this function from stack overflow
+function shuffle(array) {
+    let currentIndex = array.length;
+  
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element...
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  }
 
 module.exports = { GamePiece, Game }; // Export the classes for testing purposes:w
