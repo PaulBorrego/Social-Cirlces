@@ -45,7 +45,7 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup', async (req, res) => {
-  const { username, password, confirmPassword } = req.body;
+  const { email, username, password, confirmPassword } = req.body;
 
   // Check if password and confirm password match
   if (password !== confirmPassword) {
@@ -66,8 +66,8 @@ router.post('/signup', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
       // Insert user into the database
-      const sql = 'INSERT INTO users (username, password_hash) VALUES (?, ?)';
-      db_connection.query(sql, [username, hashedPassword], (err, result) => {
+      const sql = 'INSERT INTO users (email, username, password_hash) VALUES (?, ?, ?)';
+      db_connection.query(sql, [email, username, hashedPassword], (err, result) => {
           if (err) throw err;
           res.redirect('/'); // Redirect to login page after successful signup
       });
