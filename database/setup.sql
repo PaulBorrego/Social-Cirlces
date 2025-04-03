@@ -1,3 +1,5 @@
+drop database social;
+
 CREATE DATABASE social;
 
 USE social;
@@ -7,13 +9,13 @@ CREATE TABLE users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	score INT DEFAULT 0
 );
 
 CREATE TABLE characters (
-    character_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL PRIMARY KEY,
     position INT NOT NULL,
-    name VARCHAR(50) NOT NULL,
     personality TEXT NOT NULL,  -- Short description of personality
     compliment_effect INT NOT NULL, -- Happiness change when given a compliment
     help_effect INT NOT NULL, -- Happiness change when offered help
@@ -26,18 +28,6 @@ CREATE TABLE game_sessions (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_happiness INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
-
-CREATE TABLE actions (
-    action_id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id INT,
-    character_id INT,
-    action_type ENUM('compliment', 'help', 'invite') NOT NULL,
-    happiness_change INT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (session_id) REFERENCES game_sessions(session_id) ON DELETE CASCADE,
-    FOREIGN KEY (character_id) REFERENCES characters(character_id) ON DELETE CASCADE
 );
 
 CREATE TABLE leaderboard (

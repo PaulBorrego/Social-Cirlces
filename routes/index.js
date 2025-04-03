@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db_connection = require('../database/connection');
 var bcrypt = require('bcrypt'); // Add bcrypt for password hashing
+var gameSystem = require('../private_super_secret_data_that_is_hidden/javascript/gameSystem'); // Import game system
 
 // GET login page
 router.get('/', function(req, res, next) {
@@ -116,14 +117,55 @@ router.get('/game', (req, res) => {
   });
 });
 
+// POST game answer
+router.post('/answer-game', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/'); // Redirect if not logged in
+  }
+  console.log(req.body);
+  
+  const { circle, action } = req.body;
+  console.log("circle " + circle + " action " + action);
+
+  const sql = 'SELECT * FROM characters';
+  
+  db_connection.query(sql, (err, results) => {
+    if (err) throw err;
+  
+    let parsed_characters = JSON.parse(JSON.stringify(results));
+    let gamePieces = [];
+    parsed_characters.forEach(g => {
+      let values = [g.compliment_effect, g.help_effect, g.invite_effect];
+      gamePieces.push(new gameSystem.GamePiece(g.name,values, g.position) );
+    });
+    let game = new gameSystem.Game(gamePieces);
+    let newHappy = game.doAction(circle, action);
+    console.log("new happy:" + newHappy);
+    let reorder = game.reorderPieces(); // Reorder the pieces after action
+    console.log("reorder: " + reorder);
+
+    db_connection.query(reorder, (err, _) => {
+        if (err) throw err;
+        let userChange = 'UPDATE users SET score = score + ? WHERE username = ?';
+        db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
+            if (err) throw err;
+            res.redirect('/game'); // Redirect to login page after successful signup
+        });
+    });
+  });
+
+});
+
 // POST start-game
 router.post('/start-game', (req, res) => {
+
   if (!req.session.user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   req.session.started = true; // Set the game as started
   res.sendStatus(200); // Respond with success
+
 });
 
 // GET profile page

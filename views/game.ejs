@@ -13,9 +13,23 @@
         </div>
     </div>
     <div class="button-container">
-      <button class="action-btn" onclick="doAct(0)">give compliment</button>
-      <button class="action-btn" onclick="doAct(1)">offer help</button>
-      <button class="action-btn" onclick="doAct(2)">invite to event</button>
+      <form action="/answer-game" method="POST">
+        <input type="text" id="circleID" name="circle" value="0" style="display:none;">
+        <input type="text" id="actionID" name="action" value="0" style="display:none;">
+        <button class="action-btn" onclick="doAct(0)">
+          <input type=submit id="submit" style="display:none;">
+          give compliment
+        </button>
+        <button class="action-btn" onclick="doAct(1)">
+          <input type=submit id="submit" style="display:none;">
+          offer help
+        </button>
+        <button class="action-btn" onclick="doAct(2)">
+          <input type=submit id="submit" style="display:none;">
+          invite to event
+        </button>
+        </form>
+      </form>
     </div>
     <% } else { %>
       <div class="startgame-container">
@@ -77,10 +91,8 @@
       
       function doAct(action) {
         console.log("you picked action " + action + " on circle " + pickedCircle);
-        if (pickedCircle == null) {
-          alert("Please pick a circle first!");
-          return;
-        }
+        document.getElementById("circleID").value = pickedCircle;
+        document.getElementById("actionID").value = action;
         //console.log(game.doAction(pickedCircle,action));
       }
 

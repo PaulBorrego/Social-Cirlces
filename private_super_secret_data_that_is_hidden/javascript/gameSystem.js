@@ -26,20 +26,19 @@ class Game {
         gamePieces.forEach(g => {
             this.gamePieces[g.position] = g;
         });
-        
     }
     
     // Input: array of ints which will move the game pieces to new positions
     reorderPieces() {
         let newGamePieces = [];
-        let newOrder = shuffle(this.basic);
+        shuffle(this.basic);
 
         for (let i = 0; i < this.gamePieces.length; i++) {
-            newGamePieces[i] = this.gamePieces[newOrder[i]];
+            newGamePieces[i] = this.gamePieces[this.basic[i]];
         }
         this.gamePieces = newGamePieces;
         
-        this.updateSQL();
+        return this.updateSQL();
     }
 
     // Get the circle from circle number
@@ -50,10 +49,10 @@ class Game {
     // Get the happiness as a result of the action
     doAction(circleNumber,action) {
         let circle = this.getCircle(circleNumber);
-        console.log(circle);
+        console.log('circle 0: ' + circle[0]);
         let happiness = 0;
         for (let i = 0; i < circle.length; i++) {
-            happiness += circle[i].getActionResult(action);
+            happiness += circle[i].values[action];
         }
         return happiness;
     }
@@ -70,14 +69,15 @@ class Game {
 
     //this command will change the
     updateSQL() {
-        const pre = 'UPDATE characters SET postion='; 
-        const post = ' WHERE position=';  //dont forget semicolon
-        const semicolon = ';';
+        const pre = 'UPDATE characters SET position = '; 
+        const post = ' WHERE name = \"';  //dont forget semicolon
+        const semicolon = '\";';
         let ret = '';
         for (let i = 0; i < this.gamePieces.length; i++) {
-            ret = ret + pre + i + post + this.gamePieces[i].position + semicolon;
+            ret = ret + pre + i + post + this.gamePieces[i].name + semicolon;
             this.gamePieces[i].position = i;
         }
+        return ret;
     }
 }
 
