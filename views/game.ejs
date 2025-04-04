@@ -1,6 +1,7 @@
 <%- include('./partials/header') %>
 </head>
   <body onload="startGame('<%=JSON.stringify(characters)%>')">
+    <p><%= score %> </p>
     <% if (started) { %>
       <div class="triangle-container">
         <div class="top-circle circle" id="circle0" onclick="(pickCircle(0))">
@@ -68,9 +69,11 @@
         for (let i = 0; i <= 2; i++) {
           let result = '';
           for (let j = 0; j <= 2; j++) {
-            result = result + '<p>' + parsed_characters[i * 3 + j] + '</p>';
+            result = result + '<p>' + parsed_characters[i * 3 + j].name + '</p>';
           }
           document.getElementById('circle' + i).innerHTML = result;
+          document.getElementById("circle0").style.backgroundColor = pickedColor;
+
         }
 
       }

@@ -4,6 +4,20 @@ var db_connection = require('../database/connection');
 var bcrypt = require('bcrypt'); // Add bcrypt for password hashing
 var gameSystem = require('../private_super_secret_data_that_is_hidden/javascript/gameSystem'); // Import game system
 
+const sql = 'SELECT * FROM characters';
+let gamePieces = [];
+let game = null;
+
+db_connection.query(sql, (err, results) => {
+  if (err) throw err;
+  let parsed_characters = JSON.parse(JSON.stringify(results));
+  parsed_characters.forEach(g => {
+    let values = [g.compliment_effect, g.help_effect, g.invite_effect];
+    gamePieces.push(new gameSystem.GamePiece(g.name, values, g.position));
+  }),
+  game = new gameSystem.Game(gamePieces);
+});
+
 // GET login page
 router.get('/', function(req, res, next) {
   res.render('login', { title: 'Social Circles', error: null});
@@ -90,30 +104,22 @@ router.get('/game', (req, res) => {
     return res.redirect('/'); // If user is not logged in, redirect to login
   }
 
-  const sql = 'SELECT * FROM characters';
-  db_connection.query(sql, (err, results) => {
+  // Ensure 'started' persists across requests
+  if (req.session.started === undefined) {
+    req.session.started = false; // Only initialize if undefined
+  }
+
+  let score = 'SELECT score FROM users WHERE username = ?'
+  db_connection.query(score, ["user"], (err, userScore) => {
     if (err) throw err;
-
-    // Ensure 'started' persists across requests
-    if (req.session.started === undefined) {
-      req.session.started = false; // Only initialize if undefined
-    }
-
-    let parsed_characters = JSON.parse(JSON.stringify(results));
-    let gamePieces = [];
-    parsed_characters.forEach(g => {
-      gamePieces.push(g.name);
-    });
-
-    console.log(gamePieces);
-
     res.render('game', {
       title: 'Game',
       page: 'game',
-      characters: gamePieces,
+      score: userScore[0].score,
+      characters: game.gamePieces,
       user: req.session.user,
       started: req.session.started // Use session-based 'started' state
-    });
+    });  
   });
 });
 
@@ -122,37 +128,23 @@ router.post('/answer-game', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/'); // Redirect if not logged in
   }
-  console.log(req.body);
   
   const { circle, action } = req.body;
   console.log("circle " + circle + " action " + action);
-
   const sql = 'SELECT * FROM characters';
   
   db_connection.query(sql, (err, results) => {
     if (err) throw err;
   
-    let parsed_characters = JSON.parse(JSON.stringify(results));
-    let gamePieces = [];
-    parsed_characters.forEach(g => {
-      let values = [g.compliment_effect, g.help_effect, g.invite_effect];
-      gamePieces.push(new gameSystem.GamePiece(g.name,values, g.position) );
-    });
-    let game = new gameSystem.Game(gamePieces);
     let newHappy = game.doAction(circle, action);
     console.log("new happy:" + newHappy);
-    let reorder = game.reorderPieces(); // Reorder the pieces after action
-    console.log("reorder: " + reorder);
-
-    db_connection.query(reorder, (err, _) => {
+    game.reorderPieces(); // Reorder the pieces after action
+    let userChange = 'UPDATE users SET score = score + ? WHERE username = ?';
+    db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
         if (err) throw err;
-        let userChange = 'UPDATE users SET score = score + ? WHERE username = ?';
-        db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
-            if (err) throw err;
-            res.redirect('/game'); // Redirect to login page after successful signup
-        });
+        res.redirect('/game'); // Redirect to login page after successful signup
     });
-  });
+});
 
 });
 

@@ -21,7 +21,6 @@ class GamePiece {
 class Game {
     constructor (gamePieces) {
         this.basic = [0,1,2,3,4,5,6,7,8];
-
         this.gamePieces = [null, null, null, null, null, null, null, null, null];
         gamePieces.forEach(g => {
             this.gamePieces[g.position] = g;
@@ -37,8 +36,6 @@ class Game {
             newGamePieces[i] = this.gamePieces[this.basic[i]];
         }
         this.gamePieces = newGamePieces;
-        
-        return this.updateSQL();
     }
 
     // Get the circle from circle number
