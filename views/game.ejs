@@ -14,8 +14,7 @@
             </div>
         </div>
     </div>
-    <div class="button-container">
-      <form action="/answer-game" method="POST">
+      <form action="/answer-game" method="POST" class="button-container">
         <input type="text" id="circleID" name="circle" value="0" style="display:none;">
         <input type="text" id="actionID" name="action" value="0" style="display:none;">
         <button class="action-btn" onclick="doAct(0)">
@@ -30,9 +29,10 @@
           <input type=submit id="submit" style="display:none;">
           invite to event
         </button>
-        </form>
       </form>
-    </div>
+      <form action="/reset-plays" method="POST">
+        <button class="action-btn" type="submit">Update plays</button>
+      </form>
     <% } else { %>
       <div class="startgame-container">
         <p>Welcome to Social Circles! To get a high score, you must choose actions that boost happiness. Check the characters page to see how actions effect different characters. Click start game to begin!</p>

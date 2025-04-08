@@ -10,6 +10,7 @@ const GET_PLAYS = 'SELECT plays FROM users WHERE username = ?';
 const GET_CHARS = 'SELECT * FROM characters';
 const GET_USER_VAL = 'SELECT score, plays FROM users WHERE username = ?'
 const GET_USERS = 'SELECT username, score FROM users'
+const RESET_PLAYS = 'UPDATE users SET plays = 8'; // Reset plays to 8 for the user
 const LEADERBOARD_LEN = 10; // Length of leaderboard
 
 // Initialize game pieces and game
@@ -128,8 +129,6 @@ router.get('/game', (req, res) => {
     if (userScore[0].plays <= 0) {
       return res.redirect('/profile'); // Redirect to profile if no plays left
     }
-    console.log(userScore[0].plays); // Log the current game set
-    console.log(game.getDailies(userScore[0].plays - 1)); // Log the current game set
     res.render('game', {
       title: 'Game',
       page: 'game',
@@ -150,16 +149,13 @@ router.post('/answer-game', (req, res) => {
   
   db_connection.query(GET_PLAYS, req.session.user.username, (err, remaining_plays) => {
     if (err) throw err;
-    console.log("remaining plays: " + remaining_plays[0].plays);
     // Check if the user has remaining plays
     if (remaining_plays[0].plays <= 0) {
       return res.redirect('/profile'); // Redirect to game page if no plays left
     }
 
     const { circle, action } = req.body;
-    console.log("circle " + circle + " action " + action);
     let newHappy = game.doAction(circle, action, remaining_plays[0].plays - 1);
-    console.log("new happy:" + newHappy);
 
     let userChange = 'UPDATE users SET score = score + ?, plays = plays - 1 WHERE username = ?';
     db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
@@ -203,6 +199,17 @@ router.post('/leaderboard', (req, res) => {
       let parsed_users = JSON.parse(JSON.stringify(result));
       users.newList(parsed_users, LEADERBOARD_LEN); 
       res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
+  });
+});
+
+router.post('/reset-plays', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/'); // Redirect if not logged in
+  }
+  db_connection.query(RESET_PLAYS, (err, result) => {
+      if (err) throw err;
+      game.resetGame(); // Reset the game state
+      res.redirect('/game'); // Redirect to game page after resetting plays
   });
 });
 
