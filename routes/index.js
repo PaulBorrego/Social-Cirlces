@@ -208,7 +208,7 @@ router.post('/reset-plays', (req, res) => {
   }
   db_connection.query(RESET_PLAYS, (err, result) => {
       if (err) throw err;
-      game.resetGame(); // Reset the game state
+      game.resetDailies(); // Reset the game state
       res.redirect('/game'); // Redirect to game page after resetting plays
   });
 });
