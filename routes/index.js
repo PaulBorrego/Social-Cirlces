@@ -213,9 +213,14 @@ router.post('/reset-plays', (req, res) => {
   });
 });
 
-// GET characters page
+// Character Page
 router.get('/characters', function(req, res, next) {
-  res.render('characters', { title: 'Characters', page: 'characters' });
+  let sql = 'SELECT * FROM characters';
+  db_connection.query(sql, (err, results) => {
+    if (err) throw err;
+    console.log('Characters:', results);
+    res.render('characters', { title: 'Characters', page: 'characters', characters: results });
+  });
 });
 
 module.exports = router;
