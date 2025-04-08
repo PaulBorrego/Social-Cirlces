@@ -2,16 +2,20 @@ var express = require('express');
 var router = express.Router();
 var db_connection = require('../database/connection');
 var bcrypt = require('bcrypt'); // Add bcrypt for password hashing
-var gameSystem = require('../private_super_secret_data_that_is_hidden/javascript/gameSystem'); // Import game system
+var gameSystem =  require('../private_super_secret_data_that_is_hidden/javascript/gameSystem'); // Import game system
+var leaderboard = require('../private_super_secret_data_that_is_hidden/javascript/leaderBoard'); // Import leaderboard system
 
 //sql queries
 const GET_PLAYS = 'SELECT plays FROM users WHERE username = ?';
 const GET_CHARS = 'SELECT * FROM characters';
 const GET_USER_VAL = 'SELECT score, plays FROM users WHERE username = ?'
+const GET_USERS = 'SELECT username, score FROM users'
+const LEADERBOARD_LEN = 10; // Length of leaderboard
 
 // Initialize game pieces and game
 let gamePieces = [];
 let game = null;
+
 db_connection.query(GET_CHARS, (err, results) => {
   if (err) throw err;
   let parsed_characters = JSON.parse(JSON.stringify(results));
@@ -20,6 +24,12 @@ db_connection.query(GET_CHARS, (err, results) => {
     gamePieces.push(new gameSystem.GamePiece(g.name, values));
   }),
   game = new gameSystem.Game(gamePieces);
+});
+
+let users = null;
+db_connection.query(GET_USERS, (err, results) => {
+  if (err) throw err;
+  users = new leaderboard.Leaderboard(JSON.parse(JSON.stringify(results)));
 });
 
 // GET login page
@@ -118,11 +128,13 @@ router.get('/game', (req, res) => {
     if (userScore[0].plays <= 0) {
       return res.redirect('/profile'); // Redirect to profile if no plays left
     }
+    console.log(userScore[0].plays); // Log the current game set
+    console.log(game.getDailies(userScore[0].plays - 1)); // Log the current game set
     res.render('game', {
       title: 'Game',
       page: 'game',
       score: userScore[0].score,
-      characters: game.gamePieces,
+      characters: game.getDailies(userScore[0].plays - 1), // Get the current game set
       plays: userScore[0].plays,
       user: req.session.user,
       started: req.session.started // Use session-based 'started' state
@@ -146,15 +158,14 @@ router.post('/answer-game', (req, res) => {
 
     const { circle, action } = req.body;
     console.log("circle " + circle + " action " + action);
-    
-    let newHappy = game.doAction(circle, action, remaining_plays[0].plays);
+    let newHappy = game.doAction(circle, action, remaining_plays[0].plays - 1);
     console.log("new happy:" + newHappy);
 
     let userChange = 'UPDATE users SET score = score + ?, plays = plays - 1 WHERE username = ?';
     db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
         if (err) throw err;
         res.redirect('/game'); // Redirect to login page after successful signup
-      });
+    });
   });
 });
 
@@ -180,7 +191,19 @@ router.get('/profile', function(req, res, next) {
 
 // GET leaderboard page
 router.get('/leaderboard', function(req, res, next) {
-  res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard' });
+  res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
+});
+
+router.post('/leaderboard', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/'); // Redirect if not logged in
+  }
+  db_connection.query(GET_USERS, (err, result) => {
+      if (err) throw err;
+      let parsed_users = JSON.parse(JSON.stringify(result));
+      users.newList(parsed_users, LEADERBOARD_LEN); 
+      res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
+  });
 });
 
 // GET characters page

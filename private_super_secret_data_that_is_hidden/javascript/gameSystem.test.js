@@ -72,15 +72,15 @@ test('tests doAction', () => {
 
     game.setToBasic(); // Set the game to the basic order for testing
 
-    expect(game.doAction(0, 0, 1)).toBe(3); // user 1 because of off by one error
-    expect(game.doAction(0, 1, 1)).toBe(2);
-    expect(game.doAction(0, 2, 1)).toBe(0);
-    expect(game.doAction(1, 0, 1)).toBe(6);
-    expect(game.doAction(1, 1, 1)).toBe(7);
-    expect(game.doAction(1, 2, 1)).toBe(8);
-    expect(game.doAction(2, 0, 1)).toBe(6);
-    expect(game.doAction(2, 1, 1)).toBe(5);
-    expect(game.doAction(2, 2, 1)).toBe(4);
+    expect(game.doAction(0, 0, 0)).toBe(3); 
+    expect(game.doAction(0, 1, 0)).toBe(2);
+    expect(game.doAction(0, 2, 0)).toBe(0);
+    expect(game.doAction(1, 0, 0)).toBe(6);
+    expect(game.doAction(1, 1, 0)).toBe(7);
+    expect(game.doAction(1, 2, 0)).toBe(8);
+    expect(game.doAction(2, 0, 0)).toBe(6);
+    expect(game.doAction(2, 1, 0)).toBe(5);
+    expect(game.doAction(2, 2, 0)).toBe(4);
 });
 
 test('tests singleCircleToString', () => {

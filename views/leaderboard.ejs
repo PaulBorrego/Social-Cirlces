@@ -2,5 +2,23 @@
 
   <body>
     <h1><%= title %></h1>
+    <table>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Score</th>
+        <th>Change</th>
+      </tr>
+      <% for (let i = 0; i < leaderboard[0].length; i++) { %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= leaderboard[0][i].username %></td>
+          <td><%= leaderboard[0][i].score %></td>
+          <td><%= leaderboard[1][i] %></td>
+        </tr>
+      <% } %>
+    </table>
+    <form action="/leaderboard" method="POST">
+      <button class="action-btn" type="submit">Update</button>
   </body>
 </html>

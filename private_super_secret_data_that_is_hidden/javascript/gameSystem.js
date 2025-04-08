@@ -14,7 +14,6 @@ class GamePiece {
     getActionResult(action) {
         return this.values[action];
     }
-
 }
 
 class Game {
@@ -27,6 +26,7 @@ class Game {
         for (let i = 0; i < this.plays; i++) {
             this.dailies[i] = null;
         }
+        console.log("reset dailies");
         this.resetDailies();
     }
 
@@ -47,7 +47,7 @@ class Game {
 
     // Get the happiness as a result of the action
     doAction(circleNumber,action,p) {
-        let gameSet = this.dailies[p - 1]; //who doesn't love off by one errors? AND EVEN WORSE THE COPILOT AUTOCOMPLETED THAT SENTANCE
+        let gameSet = this.dailies[p]; //who doesn't love off by one errors? AND EVEN WORSE THE COPILOT AUTOCOMPLETED THAT SENTANCE
         let circle = this.getCircle(circleNumber,gameSet);
         let happiness = 0;
         for (let i = 0; i < circle.length; i++) {
