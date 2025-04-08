@@ -26,7 +26,6 @@ class Game {
         for (let i = 0; i < this.plays; i++) {
             this.dailies[i] = null;
         }
-        console.log("reset dailies");
         this.resetDailies();
     }
 
