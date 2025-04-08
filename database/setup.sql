@@ -39,14 +39,14 @@ CREATE TABLE leaderboard (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-INSERT INTO characters (name, position, personality, compliment_effect, help_effect, invite_effect) 
+INSERT INTO characters (name, personality, compliment_effect, help_effect, invite_effect) 
 VALUES
-('Sam', 0, 'Likes compliments, dislikes help', 2, -1, 1),
-('Alex', 1, 'Neutral, prefers invitations', 1, 0, 3),
-('Jordan', 2, 'Enjoys help, dislikes compliments', -1, 3, 0),
-('Suzy', 3, 'Likes Help, hates invitation', 1, 3, -4),
-('Lynn', 4, 'Hater', -1, -1, -1),
-('Vance', 5, 'Enjoys invites, and compliments', 1, -1, 2),
-('Ray', 6, 'Loves invites, dislikes compliments', -2, 0, 3),
-('Ervin', 7, 'Neutral, likes compliments', 1, 0, 0),
-('Ruby', 8, 'Enjoys compliments, dislikes help', -1, 1, 2);
+('Sam', 'Likes compliments, dislikes help', 2, -1, 1),
+('Alex', 'Neutral, prefers invitations', 1, 0, 3),
+('Jordan', 'Enjoys help, dislikes compliments', -1, 3, 0),
+('Suzy', 'Likes Help, hates invitation', 1, 3, -4),
+('Lynn', 'Hater', -1, -1, -1),
+('Vance', 'Enjoys invites, and compliments', 1, -1, 2),
+('Ray', 'Loves invites, dislikes compliments', -2, 0, 3),
+('Ervin', 'Neutral, likes compliments', 1, 0, 0),
+('Ruby', 'Enjoys compliments, dislikes help', -1, 1, 2);

@@ -27,10 +27,10 @@ class Game {
         for (let i = 0; i < this.plays; i++) {
             this.dailies[i] = null;
         }
-        this.setDailies();
+        this.resetDailies();
     }
 
-    setDailies() {
+    resetDailies() {
         for (let i = 0; i < this.plays; i++) {
             this.dailies[i] = shuffle(this.gamePieces);
         }
@@ -42,7 +42,6 @@ class Game {
 
     // Get the circle from circle number
     getCircle(circleNumber,gameSet) {
-        console.log(gameSet);
         return gameSet.slice(circleNumber * 3, circleNumber * 3 + 3);
     }
 
@@ -50,24 +49,30 @@ class Game {
     doAction(circleNumber,action,p) {
         let gameSet = this.dailies[p - 1]; //who doesn't love off by one errors? AND EVEN WORSE THE COPILOT AUTOCOMPLETED THAT SENTANCE
         let circle = this.getCircle(circleNumber,gameSet);
-        console.log('circle 0: ' + circle[0]);
         let happiness = 0;
         for (let i = 0; i < circle.length; i++) {
             happiness += circle[i].values[action];
         }
         return happiness;
     }
+
+    // This method is used just for testing purposes
+    setToBasic() {
+        this.dailies[0] = this.gamePieces;
+    }
+    
+    // mostly just for testing purposes
+    singleCircleToString(circleNumber) {
+        let circle = this.getCircle(circleNumber, this.dailies[0]);
+        let str = '';
+        for (let i = 0; i < circle.length; i++) {
+            str += circle[i].name + ': Compliment: ' + circle[i].values[0] + ', Help: ' + circle[i].values[1] + ', Invite: ' + circle[i].values[2] + '\n';
+        }
+        return str.trim();
+    }
+    
 }
 
-    //mostly just for testing purposes
-    // singleCircleToString(circleNumber) {
-    //     let circle = this.getCircle(circleNumber);
-    //     let str = '';
-    //     for (let i = 0; i < circle.length; i++) {
-    //         str += circle[i].name + ': Compliment: ' + circle[i].values[0] + ', Help: ' + circle[i].values[1] + ', Invite: ' + circle[i].values[2] + '\n';
-    //     }
-    //     return str.trim();
-    // }
 
 
 //got this function from stack overflow, modified it a bit to return a new array instead of modifying the original array
@@ -85,7 +90,6 @@ function shuffle(array) {
   
       // And swap it with the current element.
       ret.push(array[basic[randomIndex]]);
-      console.log(array[basic[randomIndex]]);
       basic[randomIndex] = basic[currentIndex];
     }
 
