@@ -10,13 +10,12 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	score INT DEFAULT 0,
-    plays INT DEFAULT 8,
+    score INT DEFAULT 0,
+    plays INT DEFAULT 8
 );
 
 CREATE TABLE characters (
     name VARCHAR(50) NOT NULL PRIMARY KEY,
-    position INT NOT NULL,
     personality TEXT NOT NULL,  -- Short description of personality
     compliment_effect INT NOT NULL, -- Happiness change when given a compliment
     help_effect INT NOT NULL, -- Happiness change when offered help
