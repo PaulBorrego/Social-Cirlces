@@ -5,10 +5,9 @@
 // 2: Invite to Event
 
 class GamePiece {
-    constructor (name, values, position) {
+    constructor (name, values) {
         this.name = name;
         this.values = values;
-        this.position = position
     }
 
     // Get result of action
@@ -19,33 +18,38 @@ class GamePiece {
 }
 
 class Game {
-    constructor (gamePieces) {
-        this.basic = [0,1,2,3,4,5,6,7,8];
-        this.gamePieces = [null, null, null, null, null, null, null, null, null];
-        gamePieces.forEach(g => {
-            this.gamePieces[g.position] = g;
-        });
-    }
-    
-    // Input: array of ints which will move the game pieces to new positions
-    reorderPieces() {
-        let newGamePieces = [];
-        shuffle(this.basic);
+    basic = [0,1,2,3,4,5,6,7,8];
+    plays = 8;
+    dailies = [];
 
-        for (let i = 0; i < this.gamePieces.length; i++) {
-            newGamePieces[i] = this.gamePieces[this.basic[i]];
+    constructor (gamePieces) {
+        this.gamePieces = gamePieces;
+        for (let i = 0; i < this.plays; i++) {
+            this.dailies[i] = null;
         }
-        this.gamePieces = newGamePieces;
+        this.setDailies();
+    }
+
+    setDailies() {
+        for (let i = 0; i < this.plays; i++) {
+            this.dailies[i] = shuffle(this.gamePieces);
+        }
+    }
+
+    getDailies(p) {
+        return this.dailies[p];
     }
 
     // Get the circle from circle number
-    getCircle(circleNumber) {
-        return this.gamePieces.slice(circleNumber * 3, circleNumber * 3 + 3);
+    getCircle(circleNumber,gameSet) {
+        console.log(gameSet);
+        return gameSet.slice(circleNumber * 3, circleNumber * 3 + 3);
     }
 
     // Get the happiness as a result of the action
-    doAction(circleNumber,action) {
-        let circle = this.getCircle(circleNumber);
+    doAction(circleNumber,action,p) {
+        let gameSet = this.dailies[p - 1]; //who doesn't love off by one errors? AND EVEN WORSE THE COPILOT AUTOCOMPLETED THAT SENTANCE
+        let circle = this.getCircle(circleNumber,gameSet);
         console.log('circle 0: ' + circle[0]);
         let happiness = 0;
         for (let i = 0; i < circle.length; i++) {
@@ -53,34 +57,24 @@ class Game {
         }
         return happiness;
     }
-
-    //mostly just for testing purposes
-    singleCircleToString(circleNumber) {
-        let circle = this.getCircle(circleNumber);
-        let str = '';
-        for (let i = 0; i < circle.length; i++) {
-            str += circle[i].name + ': Compliment: ' + circle[i].values[0] + ', Help: ' + circle[i].values[1] + ', Invite: ' + circle[i].values[2] + '\n';
-        }
-        return str.trim();
-    }
-
-    //this command will change the
-    updateSQL() {
-        const pre = 'UPDATE characters SET position = '; 
-        const post = ' WHERE name = \"';  //dont forget semicolon
-        const semicolon = '\";';
-        let ret = '';
-        for (let i = 0; i < this.gamePieces.length; i++) {
-            ret = ret + pre + i + post + this.gamePieces[i].name + semicolon;
-            this.gamePieces[i].position = i;
-        }
-        return ret;
-    }
 }
 
-//got this function from stack overflow
+    //mostly just for testing purposes
+    // singleCircleToString(circleNumber) {
+    //     let circle = this.getCircle(circleNumber);
+    //     let str = '';
+    //     for (let i = 0; i < circle.length; i++) {
+    //         str += circle[i].name + ': Compliment: ' + circle[i].values[0] + ', Help: ' + circle[i].values[1] + ', Invite: ' + circle[i].values[2] + '\n';
+    //     }
+    //     return str.trim();
+    // }
+
+
+//got this function from stack overflow, modified it a bit to return a new array instead of modifying the original array
 function shuffle(array) {
     let currentIndex = array.length;
+    let basic = [0,1,2,3,4,5,6,7,8];
+    let ret = [];
   
     // While there remain elements to shuffle...
     while (currentIndex != 0) {
@@ -90,9 +84,12 @@ function shuffle(array) {
       currentIndex--;
   
       // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
+      ret.push(array[basic[randomIndex]]);
+      console.log(array[basic[randomIndex]]);
+      basic[randomIndex] = basic[currentIndex];
     }
-  }
+
+    return ret;
+}
 
 module.exports = { GamePiece, Game }; // Export the classes for testing purposes:w

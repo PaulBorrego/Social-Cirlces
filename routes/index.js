@@ -4,16 +4,20 @@ var db_connection = require('../database/connection');
 var bcrypt = require('bcrypt'); // Add bcrypt for password hashing
 var gameSystem = require('../private_super_secret_data_that_is_hidden/javascript/gameSystem'); // Import game system
 
-const sql = 'SELECT * FROM characters';
+//sql queries
+const GET_PLAYS = 'SELECT plays FROM users WHERE username = ?';
+const GET_CHARS = 'SELECT * FROM characters';
+const GET_USER_VAL = 'SELECT score, plays FROM users WHERE username = ?'
+
+// Initialize game pieces and game
 let gamePieces = [];
 let game = null;
-
-db_connection.query(sql, (err, results) => {
+db_connection.query(GET_CHARS, (err, results) => {
   if (err) throw err;
   let parsed_characters = JSON.parse(JSON.stringify(results));
   parsed_characters.forEach(g => {
     let values = [g.compliment_effect, g.help_effect, g.invite_effect];
-    gamePieces.push(new gameSystem.GamePiece(g.name, values, g.position));
+    gamePieces.push(new gameSystem.GamePiece(g.name, values));
   }),
   game = new gameSystem.Game(gamePieces);
 });
@@ -109,14 +113,17 @@ router.get('/game', (req, res) => {
     req.session.started = false; // Only initialize if undefined
   }
 
-  let score = 'SELECT score FROM users WHERE username = ?'
-  db_connection.query(score, ["user"], (err, userScore) => {
+  db_connection.query(GET_USER_VAL, req.session.user.username, (err, userScore) => {
     if (err) throw err;
+    if (userScore[0].plays <= 0) {
+      return res.redirect('/profile'); // Redirect to profile if no plays left
+    }
     res.render('game', {
       title: 'Game',
       page: 'game',
       score: userScore[0].score,
       characters: game.gamePieces,
+      plays: userScore[0].plays,
       user: req.session.user,
       started: req.session.started // Use session-based 'started' state
     });  
@@ -129,23 +136,26 @@ router.post('/answer-game', (req, res) => {
     return res.redirect('/'); // Redirect if not logged in
   }
   
-  const { circle, action } = req.body;
-  console.log("circle " + circle + " action " + action);
-  const sql = 'SELECT * FROM characters';
-  
-  db_connection.query(sql, (err, results) => {
+  db_connection.query(GET_PLAYS, req.session.user.username, (err, remaining_plays) => {
     if (err) throw err;
-  
-    let newHappy = game.doAction(circle, action);
+    console.log("remaining plays: " + remaining_plays[0].plays);
+    // Check if the user has remaining plays
+    if (remaining_plays[0].plays <= 0) {
+      return res.redirect('/profile'); // Redirect to game page if no plays left
+    }
+
+    const { circle, action } = req.body;
+    console.log("circle " + circle + " action " + action);
+    
+    let newHappy = game.doAction(circle, action, remaining_plays[0].plays);
     console.log("new happy:" + newHappy);
-    game.reorderPieces(); // Reorder the pieces after action
-    let userChange = 'UPDATE users SET score = score + ? WHERE username = ?';
+
+    let userChange = 'UPDATE users SET score = score + ?, plays = plays - 1 WHERE username = ?';
     db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
         if (err) throw err;
         res.redirect('/game'); // Redirect to login page after successful signup
-    });
-});
-
+      });
+  });
 });
 
 // POST start-game

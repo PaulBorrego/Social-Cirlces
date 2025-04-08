@@ -10,7 +10,8 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	score INT DEFAULT 0
+	score INT DEFAULT 0,
+    plays INT DEFAULT 8,
 );
 
 CREATE TABLE characters (

@@ -1,7 +1,8 @@
 <%- include('./partials/header') %>
 </head>
   <body onload="startGame('<%=JSON.stringify(characters)%>')">
-    <p><%= score %> </p>
+    <p>SCORE: <%= score %> </p>
+    <p>PLAYS REMAINING: <%= plays %> </p>
     <% if (started) { %>
       <div class="triangle-container">
         <div class="top-circle circle" id="circle0" onclick="(pickCircle(0))">
@@ -44,26 +45,6 @@
       var otherColor = "lightblue";
       var pickedColor = "teal";
 
-      /*function startGame(characters) {
-        let parsed_characters = JSON.parse(characters);
-        let gamePieces = [];
-        parsed_characters.forEach(g => {
-          let values = [g.compliment_effect, g.help_effect, g.invite_effect];
-          gamePieces.push(new GamePiece(g.name,values) );
-        });
-        game = new Game(gamePieces);
-      
-        for (let i = 0; i <= 2; i++) {
-          let result = '';
-          for (let j = 0; j <= 2; j++) {
-            result = result + '<p>' + game.gamePieces[i * 3 + j].name + '</p>';
-          }
-          document.getElementById('circle' + i).innerHTML = result;
-        }
-
-        // Send request to update 'started' on the server
-      }
-      */
       function startGame(characters) {
         let parsed_characters = JSON.parse(characters);
         for (let i = 0; i <= 2; i++) {
