@@ -1,7 +1,8 @@
 <%- include('./partials/header') %>
 
   <body>
-    <h1><%= title %></h1>
+    <div class="leaderboard">
+      <h1 class="title"><%= title %></h1>
     <br>
     <table>
       <tr>
@@ -21,5 +22,6 @@
     </table>
     <form action="/leaderboard" method="POST">
       <button class="action-btn" type="submit">Update</button>
+    </div>
   </body>
 </html>

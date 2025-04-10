@@ -1,9 +1,11 @@
 <%- include('./partials/header') %>
 </head>
   <body onload="startGame('<%=JSON.stringify(characters)%>')">
-    <p>SCORE: <%= score %> </p>
-    <p>PLAYS REMAINING: <%= plays %> </p>
     <% if (started) { %>
+      <div class="scoreboard">
+        <p>SCORE: <%= score %></p>
+        <p>PLAYS REMAINING: <%= plays %></p>
+      </div>
       <div class="triangle-container">
         <div class="top-circle circle" id="circle0" onclick="(pickCircle(0))">
         </div>
@@ -13,7 +15,7 @@
             <div class="circle" id="circle2" onclick="(pickCircle(2))">
             </div>
         </div>
-    </div>
+      </div>
       <form action="/answer-game" method="POST" class="button-container">
         <input type="text" id="circleID" name="circle" value="0" style="display:none;">
         <input type="text" id="actionID" name="action" value="0" style="display:none;">
@@ -30,9 +32,11 @@
           invite to event
         </button>
       </form>
-      <form action="/reset-plays" method="POST">
-        <button class="action-btn" type="submit">Update plays</button>
-      </form>
+      <div class="update-button-wrapper">
+        <form action="/reset-plays" method="POST">
+          <button class="action-btn" type="submit">Update plays</button>
+        </form>
+      </div>
     <% } else { %>
       <div class="startgame-container">
         <p>Welcome to Social Circles! To get a high score, you must choose actions that boost happiness. Check the characters page to see how actions effect different characters. Click start game to begin!</p>

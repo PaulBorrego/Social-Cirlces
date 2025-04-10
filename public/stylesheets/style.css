@@ -97,6 +97,11 @@ header img.active {
   margin-bottom: 10px;
 }
 
+.title {
+  text-align: center;
+  margin-top: 130px;
+}
+
 .startgame-container {
   display: flex;
   flex-direction: column; /* Stack items vertically */
@@ -110,6 +115,18 @@ header img.active {
   max-width: 500px; /* Limit the width of the paragraph */
   width: 100%; /* Allow it to be responsive, but not stretch too wide */
   margin: 0 auto; /* Center the paragraph */
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center the items horizontally */
+  justify-content: center; /* Center vertically if you want */
+  text-align: center; /* Center the text inside the <p> */
+}
+
+table {
+  border: 2px solid black; /* Black border around the entire table */
 }
 
 .triangle-container {
@@ -138,7 +155,96 @@ header img.active {
   border: 3px solid black;
 }
 
+.scoreboard {
+  position: absolute;
+  left: 13%;
+  top: 40%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px; /* Set a fixed width */
+}
+
+.update-button-wrapper {
+  position: absolute;
+  right: 13%;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 200px; /* Match scoreboard width */
+  display: flex;
+  justify-content: center;
+}
+
 p {
   display: block;
   margin: 5px 0; /* Adjust as needed */
+}
+
+/* ------------------- Responsive Styles ------------------- */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+  }
+
+  .scoreboard {
+    position: static; /* No absolute positioning */
+    transform: none;
+    margin-top: 100px; /* Add space to push it below the header */
+    align-items: center;
+    text-align: center;
+  }
+
+  .update-button-wrapper {
+    position: static;
+    transform: none;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+
+  .triangle-container {
+    height: auto;
+    gap: 30px;
+    padding: 20px 0;
+  }
+
+  .bottom-circles {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .circle {
+    width: 130px;
+    height: 130px;
+    font-size: 0.9em;
+  }
+
+  .action-btn {
+    font-size: 0.9em;
+    padding: 8px 16px;
+    height: auto;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    position: static;
+    transform: none;
+  }
+
+  header {
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  header img {
+    width: 80px;
+  }
 }
