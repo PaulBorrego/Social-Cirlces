@@ -180,10 +180,25 @@ router.post('/start-game', (req, res) => {
 // GET profile page
 router.get('/profile', function(req, res, next) {
   if (!req.session.user) {
-    return res.redirect('/'); // Redirect if not logged in
+    return res.redirect('/');
   }
-  res.render('profile', { title: 'Profile', page: 'profile', username: req.session.user.username });
+
+  const sql = 'SELECT username, email, score, plays, created_at FROM users WHERE username = ?';
+  db_connection.query(sql, [req.session.user.username], (err, results) => {
+    if (err) throw err;
+    if (results.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    const user = results[0];
+    res.render('profile', {
+      title: 'Profile',
+      page: 'profile',
+      user: user
+    });
+  });
 });
+
 
 // GET leaderboard page
 router.get('/leaderboard', function(req, res, next) {
