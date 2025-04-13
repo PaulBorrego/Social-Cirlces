@@ -2,7 +2,7 @@
 
 <body>
   <div class="profile-container">
-    <h1><%= title %></h1>
+    <h1 class="title"><%= title %></h1>
     <div class="card">
       <h2>👤 <%= user.username %></h2>
       <p><strong>Email:</strong> <%= user.email %></p>
@@ -10,6 +10,9 @@
       <p><strong>Plays Left:</strong> <%= user.plays %></p>
       <p><strong>Joined:</strong> <%= new Date(user.created_at).toLocaleDateString() %></p>
     </div>
+    <form action="/logout" method="POST" style="margin-top: 1.5rem;">
+      <button type="submit">Log Out</button>
+    </form>
     <form action="/reset-plays" method="POST" style="margin-top: 1.5rem;">
       <button type="submit">🔄 Reset Plays</button>
     </form>
@@ -29,11 +32,6 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 2rem;
     margin-top: 1rem;
-  }
-
-  h1 {
-    color: #333;
-    margin-bottom: 1rem;
   }
 
   h2 {
