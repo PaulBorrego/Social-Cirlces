@@ -115,6 +115,7 @@ header img.active {
   max-width: 500px; /* Limit the width of the paragraph */
   width: 100%; /* Allow it to be responsive, but not stretch too wide */
   margin: 0 auto; /* Center the paragraph */
+  margin-top: 130px;
 }
 
 .leaderboard {
