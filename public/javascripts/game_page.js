@@ -65,7 +65,7 @@ function setTimeDiff() {
     var seconds = 59 - now.getSeconds();
 
     // Display the result in the element with id="demo"
-    document.getElementById("timer").innerHTML = minutes + " mintues and " + seconds + " seconds until plays reset " 
+    document.getElementById("timer").innerHTML = minutes + " minutes and " + seconds + " seconds until plays reset " 
 
     // If the count down is finished, write some text
     if (start_hour != now.getHours()) {

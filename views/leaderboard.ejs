@@ -13,13 +13,16 @@
       </tr>
       <% for (let i = 0; i < leaderboard[0].length; i++) { %>
         <tr>
-          <td><%= i + 1 %></td>
+          <td>
+            <% if (i === 0) { %>🥇<% } else if (i === 1) { %>🥈<% } else if (i === 2) { %>🥉<% } else { %><%= i + 1 %><% } %>
+          </td>
           <td><%= leaderboard[0][i].username %></td>
           <td><%= leaderboard[0][i].score %></td>
           <td><%= leaderboard[1][i] %></td>
         </tr>
       <% } %>
     </table>
+    <p>positions reset every 3 minutes</p>
     </div>
   </body>
 </html>
