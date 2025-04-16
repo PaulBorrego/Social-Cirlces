@@ -254,7 +254,7 @@ router.get('/characters', function(req, res, next) {
   if (!req.session.user) {
     return res.redirect('/');
   }
-  res.render('characters', { title: 'Characters', page: 'characters', characters: results });
+  res.render('characters', { title: 'Characters', page: 'characters', characters: characters });
 });
 
 //##################################################
