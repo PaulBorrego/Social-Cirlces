@@ -1,8 +1,13 @@
 <%- include('./partials/header') %>
+  <script src="javascripts/game_page.js"></script>
 </head>
-  <body onload="startGame('<%=JSON.stringify(characters)%>')">
-    <% if (started) { %>
-      <div class="scoreboard">
+  <body onload="startGame('<%=JSON.stringify(characters)%>', <%=noPlays%>)"> <!-- ignore these, its nessesary --> 
+    <% if (noPlays) { %>
+      <div class="play-timer">
+        <p id="timer"></p>
+      </div>
+    <%} else if (started) { %>
+      <div class="scoreboard" >
         <p>SCORE: <%= score %></p>
         <p>PLAYS REMAINING: <%= plays %></p>
       </div>
@@ -38,58 +43,6 @@
         <button id="startGame" onclick="ok()">Start Game</button>
       </div>
     <% } %>
-    <script>
-      var game = null;
-      var pickedCircle = null;
-      var otherColor = "lightblue";
-      var pickedColor = "teal";
-
-      function startGame(characters) {
-        let parsed_characters = JSON.parse(characters);
-        for (let i = 0; i <= 2; i++) {
-          let result = '';
-          for (let j = 0; j <= 2; j++) {
-            result = result + '<p>' + parsed_characters[i * 3 + j].name + '</p>';
-          }
-          document.getElementById('circle' + i).innerHTML = result;
-          document.getElementById("circle0").style.backgroundColor = pickedColor;
-
-        }
-
-      }
-
-      function ok() {
-        fetch('/start-game', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(response => {
-            if (response.ok) {
-                window.location.reload(); // Reload page to reflect game start
-            }
-        });
-      }
-
-      
-      function doAct(action) {
-        console.log("you picked action " + action + " on circle " + pickedCircle);
-        document.getElementById("circleID").value = pickedCircle;
-        document.getElementById("actionID").value = action;
-        //console.log(game.doAction(pickedCircle,action));
-      }
-
-      function pickCircle(circleNumber) {
-        if (pickedCircle != circleNumber) {
-          pickedCircle = circleNumber;
-          console.log(circleNumber);
-          document.getElementById("circle0").style.backgroundColor = otherColor;
-          document.getElementById("circle1").style.backgroundColor = otherColor;
-          document.getElementById("circle2").style.backgroundColor = otherColor;
-          document.getElementById("circle" + circleNumber).style.backgroundColor = pickedColor;
-        }
-      }
-    </script>
   </body>
   
 </html>
