@@ -5,6 +5,7 @@ var bcrypt = require('bcrypt'); // Add bcrypt for password hashing
 var gameSystem =  require('../private_super_secret_data_that_is_hidden/javascript/gameSystem'); // Import game system
 var leaderboard = require('../private_super_secret_data_that_is_hidden/javascript/leaderBoard'); // Import leaderboard system
 
+//##################################################
 //sql queries
 const GET_PLAYS = 'SELECT plays FROM users WHERE username = ?';
 const GET_CHARS = 'SELECT * FROM characters';
@@ -12,11 +13,15 @@ const GET_USER_VAL = 'SELECT score, plays FROM users WHERE username = ?'
 const GET_USERS = 'SELECT username, score FROM users'
 const RESET_PLAYS = 'UPDATE users SET plays = 8'; // Reset plays to 8 for the user
 const LEADERBOARD_LEN = 10; // Length of leaderboard
+const ONLYLETTERSPATTERN = /^[A-Za-z]+$/;
+//##################################################
 
+//##################################################
+// Inital game variables setup
+//================================================== 
 // Initialize game pieces and game
 let gamePieces = [];
 let game = null;
-
 db_connection.query(GET_CHARS, (err, results) => {
   if (err) throw err;
   let parsed_characters = JSON.parse(JSON.stringify(results));
@@ -26,13 +31,26 @@ db_connection.query(GET_CHARS, (err, results) => {
   }),
   game = new gameSystem.Game(gamePieces);
 });
-
+//================================================== 
+// Initialize the leaderboard
 let users = null;
 db_connection.query(GET_USERS, (err, results) => {
   if (err) throw err;
   users = new leaderboard.Leaderboard(JSON.parse(JSON.stringify(results)));
 });
+//================================================== 
+// get the list of characters
+let characters_sql= 'SELECT * FROM characters';
+let characters = null;
+db_connection.query(characters_sql, (err, results) => {
+  if (err) throw err;
+  characters = results;
+});
+//================================================== 
+//##################################################
 
+//##################################################
+//Routing
 // GET login page
 router.get('/', function(req, res, next) {
   res.render('login', { title: 'Social Circles', error: null});
@@ -40,6 +58,10 @@ router.get('/', function(req, res, next) {
 
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
+
+  if(!username.match(ONLYLETTERSPATTERN)) {
+    return res.render('login', { title: 'Social Circles', error: "Invalid username or password"});
+  }
 
   // Query for the user by username
   let sql = 'SELECT * FROM users WHERE username = ?'; // Use 'username' to find the user
@@ -75,11 +97,15 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup', async (req, res) => {
-  const { email, username, password, confirmPassword } = req.body;
+  const { username, password, confirmPassword } = req.body;
 
   // Check if password and confirm password match
   if (password !== confirmPassword) {
     return res.render('signup', { title: 'Sign Up', error: 'Passwords do not match' }); // Pass error message
+  
+  }
+  if(!username.match(ONLYLETTERSPATTERN)){
+    return res.render('signup', { title: 'Social Circles', error: "Only letters in username please"});
   }
 
   // Check if username already exists
@@ -96,8 +122,8 @@ router.post('/signup', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
       // Insert user into the database
-      const sql = 'INSERT INTO users (email, username, password_hash) VALUES (?, ?, ?)';
-      db_connection.query(sql, [email, username, hashedPassword], (err, result) => {
+      const sql = 'INSERT INTO users ( username, password_hash) VALUES (?, ?)';
+      db_connection.query(sql, [ username, hashedPassword], (err, result) => {
           if (err) throw err;
           res.redirect('/'); // Redirect to login page after successful signup
       });
@@ -127,17 +153,28 @@ router.get('/game', (req, res) => {
   db_connection.query(GET_USER_VAL, req.session.user.username, (err, userScore) => {
     if (err) throw err;
     if (userScore[0].plays <= 0) {
-      return res.redirect('/profile'); // Redirect to profile if no plays left
-    }
-    res.render('game', {
-      title: 'Game',
-      page: 'game',
-      score: userScore[0].score,
-      characters: game.getDailies(userScore[0].plays - 1), // Get the current game set
-      plays: userScore[0].plays,
-      user: req.session.user,
-      started: req.session.started // Use session-based 'started' state
-    });  
+      res.render('game', {
+        title: 'Game',
+        page: 'game',
+        score: userScore[0].score,
+        characters: [],
+        plays: userScore[0].plays,
+        user: req.session.user,
+        started: req.session.started, // Use session-based 'started' state
+        noPlays: true // Indicate no plays left
+      });  
+    } else {
+        res.render('game', {
+        title: 'Game',
+        page: 'game',
+        score: userScore[0].score,
+        characters: game.getDailies(userScore[0].plays - 1), // Get the current game set
+        plays: userScore[0].plays,
+        user: req.session.user,
+        started: req.session.started, // Use session-based 'started' state
+        noPlays: false // Indicate no plays left
+      });
+    }  
   });
 });
 
@@ -151,11 +188,15 @@ router.post('/answer-game', (req, res) => {
     if (err) throw err;
     // Check if the user has remaining plays
     if (remaining_plays[0].plays <= 0) {
-      return res.redirect('/profile'); // Redirect to game page if no plays left
+      return res.redirect('/game'); // Redirect to game page if no plays left
     }
 
     const { circle, action } = req.body;
     let newHappy = game.doAction(circle, action, remaining_plays[0].plays - 1);
+
+    if (!(circle > -1 && circle < 3 && action > -1 && action < 3)) {
+      return res.redirect('/game');
+    }
 
     let userChange = 'UPDATE users SET score = score + ?, plays = plays - 1 WHERE username = ?';
     db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
@@ -183,7 +224,7 @@ router.get('/profile', function(req, res, next) {
     return res.redirect('/');
   }
 
-  const sql = 'SELECT username, email, score, plays, created_at FROM users WHERE username = ?';
+  const sql = 'SELECT username, score, plays, created_at FROM users WHERE username = ?';
   db_connection.query(sql, [req.session.user.username], (err, results) => {
     if (err) throw err;
     if (results.length === 0) {
@@ -199,43 +240,50 @@ router.get('/profile', function(req, res, next) {
   });
 });
 
-
 // GET leaderboard page
 router.get('/leaderboard', function(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
   res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
 });
 
-router.post('/leaderboard', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/'); // Redirect if not logged in
-  }
-  db_connection.query(GET_USERS, (err, result) => {
-      if (err) throw err;
-      let parsed_users = JSON.parse(JSON.stringify(result));
-      users.newList(parsed_users, LEADERBOARD_LEN); 
-      res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
-  });
-});
-
-router.post('/reset-plays', (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/'); // Redirect if not logged in
-  }
-  db_connection.query(RESET_PLAYS, (err, result) => {
-      if (err) throw err;
-      game.resetDailies(); // Reset the game state
-      res.redirect('/game'); // Redirect to game page after resetting plays
-  });
-});
 
 // Character Page
 router.get('/characters', function(req, res, next) {
-  let sql = 'SELECT * FROM characters';
-  db_connection.query(sql, (err, results) => {
-    if (err) throw err;
-    console.log('Characters:', results);
-    res.render('characters', { title: 'Characters', page: 'characters', characters: results });
-  });
+  if (!req.session.user) {
+    return res.redirect('/');
+  }
+  res.render('characters', { title: 'Characters', page: 'characters', characters: results });
 });
+
+//##################################################
+// Crontab stuff, Allows for scheduling
+const cron = require('node-cron');
+let cron_counter = 0;
+
+cron.schedule("* * * * *", resetLeaderboard); // every third minute
+cron.schedule("0 * * * *", resetPlays); // At the start of every hour
+
+function resetLeaderboard() {
+  cron_counter++;
+  if (cron_counter == 2) { // every third minute
+    cron_counter = 0; // Reset counter
+    db_connection.query(GET_USERS, (err, result) => {
+      if (err) throw err;
+      let parsed_users = JSON.parse(JSON.stringify(result));
+      users.newList(parsed_users, LEADERBOARD_LEN); 
+    });
+
+  }
+}
+
+function resetPlays() {
+  db_connection.query(RESET_PLAYS, (err, _) => {
+      if (err) throw err;
+      game.resetDailies(); // Reset the game state
+  });
+}
+//##################################################
 
 module.exports = router;
