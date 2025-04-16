@@ -18,5 +18,5 @@ Kevin:  ~~Create character page~~, ~~Create Profile Page~~
 
 ToDo 4/11 - 4/something  
 Brandon: ~~Compact Characters page~~  
-Paul: Data Cleansing to stop sql injections, Find a way to stop a lot of pings from one ip, make it so you don't need port number after ip, add scheduling, add user-playing data  
-Kevin: 
+Paul: ~~Data Cleansing to stop sql injections~~, Find a way to stop a lot of pings from one ip, make it so you don't need port number after ip, ~~add scheduling~~  
+Kevin: add user-playing data  
