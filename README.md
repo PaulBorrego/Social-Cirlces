@@ -12,6 +12,11 @@ Then You can start with:
 `npm start`
 
 ToDO 3/31 - 4/4:  
-Brandon: Circles game UI  
-Paul: Add email to signup, Create Leaderboard, integrate game into ui, change database to cloud one  
-Kevin:  Create character page, Create Profile Page
+Brandon: ~~Circles game UI~~  
+Paul: ~~Add email to signup~~ , ~~Create Leaderboard~~, ~~integrate game into ui~~, change database to cloud one  
+Kevin:  ~~Create character page~~, ~~Create Profile Page~~
+
+ToDo 4/11 - 4/something  
+Brandon: ~~Compact Characters page~~  
+Paul: Data Cleansing to stop sql injections, Find a way to stop a lot of pings from one ip, make it so you don't need port number after ip, add scheduling, add user-playing data  
+Kevin: 
