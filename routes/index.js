@@ -164,7 +164,6 @@ router.get('/game', (req, res) => {
         noPlays: true // Indicate no plays left
       });  
     } else {
-        console.log(game.getDailies(userScore[0].plays - 1));
         res.render('game', {
         title: 'Game',
         page: 'game',
@@ -261,7 +260,6 @@ router.get('/characters', function(req, res, next) {
 //##################################################
 // Crontab stuff, Allows for scheduling
 const cron = require('node-cron');
-console.log("Scheduler started");
 let cron_counter = 0;
 
 cron.schedule("* * * * *", resetLeaderboard); // every third minute
@@ -271,7 +269,6 @@ function resetLeaderboard() {
   cron_counter++;
   if (cron_counter == 2) { // every third minute
     cron_counter = 0; // Reset counter
-    console.log("resetting leaderboard at " + new Date());
     db_connection.query(GET_USERS, (err, result) => {
       if (err) throw err;
       let parsed_users = JSON.parse(JSON.stringify(result));
@@ -282,7 +279,6 @@ function resetLeaderboard() {
 }
 
 function resetPlays() {
-  console.log("resetting plays at " + new Date());
   db_connection.query(RESET_PLAYS, (err, _) => {
       if (err) throw err;
       game.resetDailies(); // Reset the game state

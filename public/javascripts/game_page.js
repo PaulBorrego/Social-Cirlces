@@ -4,7 +4,6 @@ var otherColor = "lightblue";
 var pickedColor = "teal";
 
 function startGame(characters, noPlays) {
-    console.log(noPlays);
     if (noPlays) {
         countdown();
     } else {
@@ -34,16 +33,13 @@ function ok() {
 }
 
 function doAct(action) {
-    console.log("you picked action " + action + " on circle " + pickedCircle);
     document.getElementById("circleID").value = pickedCircle;
     document.getElementById("actionID").value = action;
-    //console.log(game.doAction(pickedCircle,action));
 }
 
 function pickCircle(circleNumber) {
     if (pickedCircle != circleNumber) {
         pickedCircle = circleNumber;
-        console.log(circleNumber);
         document.getElementById("circle0").style.backgroundColor = otherColor;
         document.getElementById("circle1").style.backgroundColor = otherColor;
         document.getElementById("circle2").style.backgroundColor = otherColor;
