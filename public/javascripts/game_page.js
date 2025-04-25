@@ -72,3 +72,7 @@ function setTimeDiff() {
         document.getElementById("timer").innerHTML = "done";
     }
 }
+
+function setColor(color) {
+    window.location.href = `/set-color?color=${color}`;
+  }  

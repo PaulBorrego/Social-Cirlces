@@ -53,7 +53,7 @@ db_connection.query(characters_sql, (err, results) => {
 //Routing
 // GET login page
 router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Social Circles', error: null});
+  res.render("login", { title: 'Social Circles', error: null});
 });
 
 router.post('/login', (req, res) => {
@@ -141,6 +141,7 @@ router.post('/logout', (req, res) => {
 
 // GET game page
 router.get('/game', (req, res) => {
+  const bgColor = req.cookies.bgColor || "linear-gradient(to right, #005F6B, #008C9E)"; // default color
   if (!req.session.user) {
     return res.redirect('/'); // If user is not logged in, redirect to login
   }
@@ -153,7 +154,7 @@ router.get('/game', (req, res) => {
   db_connection.query(GET_USER_VAL, req.session.user.username, (err, userScore) => {
     if (err) throw err;
     if (userScore[0].plays <= 0) {
-      res.render('game', {
+      res.render('game', { bgColor, 
         title: 'Game',
         page: 'game',
         score: userScore[0].score,
@@ -164,7 +165,7 @@ router.get('/game', (req, res) => {
         noPlays: true // Indicate no plays left
       });  
     } else {
-        res.render('game', {
+        res.render('game', { bgColor, 
         title: 'Game',
         page: 'game',
         score: userScore[0].score,
@@ -220,6 +221,7 @@ router.post('/start-game', (req, res) => {
 
 // GET profile page
 router.get('/profile', function(req, res, next) {
+  const bgColor = req.cookies.bgColor || "linear-gradient(to right, #005F6B, #008C9E)"; // default color
   if (!req.session.user) {
     return res.redirect('/');
   }
@@ -232,7 +234,7 @@ router.get('/profile', function(req, res, next) {
     }
 
     const user = results[0];
-    res.render('profile', {
+    res.render('profile', { bgColor, 
       title: 'Profile',
       page: 'profile',
       user: user
@@ -242,19 +244,21 @@ router.get('/profile', function(req, res, next) {
 
 // GET leaderboard page
 router.get('/leaderboard', function(req, res, next) {
+  const bgColor = req.cookies.bgColor || "linear-gradient(to right, #005F6B, #008C9E)"; // default color
   if (!req.session.user) {
     return res.redirect('/');
   }
-  res.render('leaderboard', { title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
+  res.render('leaderboard', { bgColor, title: 'Leaderboard', page: 'leaderboard', leaderboard: users.getLeaderboard(LEADERBOARD_LEN) });
 });
 
 
 // Character Page
 router.get('/characters', function(req, res, next) {
+  const bgColor = req.cookies.bgColor || "linear-gradient(to right, #005F6B, #008C9E)"; // default color
   if (!req.session.user) {
     return res.redirect('/');
   }
-  res.render('characters', { title: 'Characters', page: 'characters', characters: characters });
+  res.render('characters', { bgColor, title: 'Characters', page: 'characters', characters: characters });
 });
 
 //##################################################
@@ -285,5 +289,11 @@ function resetPlays() {
   });
 }
 //##################################################
+
+router.get('/set-color', (req, res) => {
+  const { color } = req.query;
+  res.cookie('bgColor', color, { maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
+  res.redirect('/profile');
+});
 
 module.exports = router;

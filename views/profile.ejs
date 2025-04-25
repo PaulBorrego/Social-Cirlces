@@ -12,18 +12,27 @@
     <form action="/logout" method="POST" style="margin-top: 1.5rem;">
       <button type="submit">Log Out</button>
     </form>
+    <button onclick="setColor('linear-gradient(to right, white, #f64949)')">Light Background</button>
+    <button onclick="setColor('linear-gradient(to right, #005F6B, #008C9E)')">Dark Background</button>
+    <button onclick="setColor('url(/images/mater.png)')">Tow Mater</button>
   </div>
+  
+  <script>
+    function setColor(color) {
+      window.location.href = `/set-color?color=${encodeURIComponent(color)}`;
+    }
+  </script>
 </body>
 
 <style>
   .profile-container {
-    max-width: 600px;
+    max-width: 250px;
     margin: auto;
     text-align: center;
   }
 
   .card {
-    background-color: #fff;
+    background-color: lightblue;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 2rem;
@@ -31,7 +40,7 @@
   }
 
   h2 {
-    color: #007bff;
+    color: black;
     margin-bottom: 0.5rem;
   }
 
