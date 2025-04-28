@@ -238,7 +238,7 @@ router.get('/profile', function(req, res, next) {
     return res.redirect('/');
   }
 
-  const sql = 'SELECT username, score, plays, created_at FROM users WHERE username = ?';
+  const sql = 'SELECT username, score, plays, games_played, total_score, total_actions, last_played, created_at FROM users WHERE username = ?';
   db_connection.query(sql, [req.session.user.username], (err, results) => {
     if (err) throw err;
     if (results.length === 0) {
