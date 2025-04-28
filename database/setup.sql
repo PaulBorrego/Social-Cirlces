@@ -10,7 +10,10 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     score INT DEFAULT 0,
-    plays INT DEFAULT 8
+    plays INT DEFAULT 8,
+    total_score INT DEFAULT 0,
+    total_actions INT DEFAULT 0,
+    last_played TIMESTAMP NULL;
 );
 
 CREATE TABLE characters (
@@ -48,3 +51,6 @@ VALUES
 ('Ray', 'Loves invites, dislikes compliments', -2, 0, 3),
 ('Ervin', 'Neutral, likes compliments', 1, 0, 0),
 ('Ruby', 'Enjoys compliments, dislikes help', -1, 1, 2);
+
+
+

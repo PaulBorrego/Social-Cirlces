@@ -7,6 +7,10 @@
       <h2>👤 <%= user.username %></h2>
       <p><strong>Score:</strong> <%= user.score %></p>
       <p><strong>Plays Left:</strong> <%= user.plays %></p>
+      <p><strong>Games Played:</strong> <%= user.games_played %></p>
+      <p><strong>Total Score Earned:</strong> <%= user.total_score %></p>
+      <p><strong>Total Actions Taken:</strong> <%= user.total_actions %></p>
+      <p><strong>Last Played:</strong> <%= user.last_played ? new Date(user.last_played).toLocaleString() : "Never" %></p>
       <p><strong>Joined:</strong> <%= new Date(user.created_at).toLocaleDateString() %></p>
     </div>
     <form action="/logout" method="POST" style="margin-top: 1.5rem;">

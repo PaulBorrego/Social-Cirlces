@@ -199,11 +199,20 @@ router.post('/answer-game', (req, res) => {
       return res.redirect('/game');
     }
 
-    let userChange = 'UPDATE users SET score = score + ?, plays = plays - 1 WHERE username = ?';
-    db_connection.query(userChange, [newHappy, req.session.user.username], (err, _) => {
-        if (err) throw err;
-        res.redirect('/game'); // Redirect to login page after successful signup
-    });
+    let userChange = `
+      UPDATE users 
+      SET 
+        score = score + ?, 
+        total_score = total_score + ?,
+        total_actions = total_actions + 1,
+        plays = plays - 1,
+        last_played = CURRENT_TIMESTAMP
+      WHERE username = ?`;
+    
+    db_connection.query(userChange, [newHappy, newHappy, req.session.user.username], (err, _) => {
+      if (err) throw err;
+      res.redirect('/game');
+    }); 
   });
 });
 
@@ -215,8 +224,11 @@ router.post('/start-game', (req, res) => {
   }
 
   req.session.started = true; // Set the game as started
-  res.sendStatus(200); // Respond with success
-
+  const sql = 'UPDATE users SET games_played = games_played + 1 WHERE username = ?';
+  db_connection.query(sql, [req.session.user.username], (err, result) => {
+    if (err) throw err;
+    res.sendStatus(200);
+  });
 });
 
 // GET profile page
