@@ -11,9 +11,10 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     score INT DEFAULT 0,
     plays INT DEFAULT 8,
+    games_played INT DEFAULT 0,
     total_score INT DEFAULT 0,
     total_actions INT DEFAULT 0,
-    last_played TIMESTAMP NULL;
+    last_played TIMESTAMP NULL
 );
 
 CREATE TABLE characters (
