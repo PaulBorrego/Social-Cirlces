@@ -11,12 +11,7 @@ Need to run this before starting:
 Then You can start with:  
 `npm start`
 
-ToDO 3/31 - 4/4:  
-Brandon: ~~Circles game UI~~  
-Paul: ~~Add email to signup~~ , ~~Create Leaderboard~~, ~~integrate game into ui~~, change database to cloud one  
-Kevin:  ~~Create character page~~, ~~Create Profile Page~~
-
-ToDo 4/11 - 4/something  
-Brandon: ~~Compact Characters page~~, general ui  
-Paul: ~~Data Cleansing to stop sql injections~~, Find a way to stop a lot of pings from one ip, make it so you don't need port number after ip, ~~add scheduling~~, websocket leaderboard  
-Kevin: add user-playing data  
+Super Fun Maintenance Tasks:
+-design the three background buttons so that their appearance gives a clue to what they do
+-make it more apparent that the website is a game
+-make the character cards all fit on the characters page without having to scroll
