@@ -18,3 +18,5 @@ Super Fun Maintenance Tasks:
 -make it more apparent that the website is a game
 
 -make the character cards all fit on the characters page without having to scroll
+
+-give images to the characters on both game page and characters page
