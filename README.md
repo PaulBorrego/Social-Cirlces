@@ -20,3 +20,5 @@ Super Fun Maintenance Tasks:
 -make the character cards all fit on the characters page without having to scroll
 
 -give images to the characters on both game page and characters page
+
+-add website for live updating leaderboard
